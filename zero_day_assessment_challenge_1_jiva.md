@@ -72,9 +72,17 @@ There's another vulnerability here called **Same-Site Request Forgery (SSRF)** t
 
 ![Image](./writeup_images/c1_do_get_exploit2.png)
 
+Additionally, if we specify the URL to a large file (say, 1GB of `A`s), we can essentially exploit a Denial-of-Service vulnerability, since the Java process on the server is likely not able to store massive amounts of data in memory and ultimately crash. Here's an example of that:
+
+![Image](./writeup_images/c1_do_get_DoS_example.png)
+
+![Image](./writeup_images/c1_do_get_DoS_server_crash.png)
+
 A PoC of the arbitrary file read exploit can be found in `PoCs/pwn_c1_do_get_arbitrary_file_read.py`.
 
 A PoC of the SSRF exploit can be found in `PoCs/pwn_c1_do_get_ssrf.py`. Note that you'll need a webserver serving data from port 9001 on the localhost for this PoC to work.
+
+A PoC of the denial-of-service exploit can be found in `PoCs/pwn_c1_do_get_DoS.py`.
 
 ***
 
@@ -84,9 +92,17 @@ Let's checkout `do_list_notes()` and `do_make_note()`.
 
 When I first looked at `do_list_notes()`, nothing immediately stood out to me. The method it self doesn't take in any input and appears to only run `ls` on the directory created in `main()` (`/tmp/notes_dir`), after which writing the output to the socket. Moving on to peek at out what `do_make_note()` is doing...
 
-The code in `do_make_note()` takes in input via `inputLine`. From `inputLine`, the code _appears_ to take the substring starting at index 7, then creates a filename based on the current time's epoch (stored in `posix_time`), and stores the value of the sliced `inputLine` into the file `/tmp/notes_dir/<posix_time>` (along with a new line character, which is decimal value `10`). One interesting thing to note is that on my host, the line `inputLine = inputLine.substring(7);` doesn't appear to work. That is, instead of properly begin the substring starting at index 7, it writes the entire input into the file. I'm unsure why this is happening. Maybe it's some Java weirdness that I'm not familiar with?
+The code in `do_make_note()` takes in input via `inputLine`. From `inputLine`, the code _appears_ to take the substring starting at index 7, then creates a filename based on the current time's epoch (stored in `posix_time`), and stores the value of the sliced `inputLine` into the file `/tmp/notes_dir/<posix_time>` (along with a new line character, which is decimal value `10`). One interesting thing to note is that on my host, the line `inputLine = inputLine.substring(7);` doesn't appear to work. That is, instead of properly begin the substring starting at index 7, it writes the entire input into the file. I'm unsure why this is happening. Maybe it's some Java weirdness that I'm not familiar with? Anyways.
 
-At this point, I decide to move on to `do_read_note()`:
+Because of this weirdness, we're able to effectively write a file with an arbitrary file size (up to Java's max heap size), meaning we can effectively exhaust the disk space on the target system and cause a denial-of-service. We can also use this weird to exhaust the heap-space of the Java process and cause a crash, resulting in a denial-of-service vulnerability.
+
+A PoC of the heap exhaustion denial-of-service exploit can be found in `PoCs/pwn_c1_do_make_note_OOM_DoS.py`.
+
+A PoC of the disk-space exhaustion denial-of-service exploit can be found in `PoCs/pwn_c1_do_make_note_exhaust_disk_space_DoS.py`. *WARNING* probably don't run this =]
+
+***
+
+On to `do_read_note()`:
 
 ![Image](./writeup_images/c1_do_read_note.png)
 
@@ -104,7 +120,7 @@ Finally, after reviewing the code in `command_loop()` in its entirety, there app
 
 ![Image](./writeup_images/c1_do_shell.png)
 
-Sploit:
+"Exploit" example:
 
 ![Image](./writeup_images/c1_secret_shell_mikejones_sploit.png)
 
