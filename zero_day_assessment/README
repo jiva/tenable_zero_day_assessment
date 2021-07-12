@@ -1,0 +1,40 @@
+Intro
+=====
+No one wants homework. However, this position requires a variety of skills that are difficult to suss out through interviews alone. For example, it's difficult to determine how persistent the candidate is when facing challenging problems. Or when provided with minimal guidance. As such, we are presenting you with four challenges. They range from very easy to moderate difficulty. Each challenge has a brief write up below and a description of what is expected from the candidate. Please, do not skimp on the documentation portion of the challenges. Actually being able to communicate your research to colleagues and vendors is of the utmost importance, especially for this position. Feel free to include screenshots and any reasonable file format you'd like for your write ups (pdf, word, markdown, etc.).
+
+You have seven days to work on the challenges. After seven days, please email us the deliverables as described below for both completed and incomplete challenges. We do not expect every challenge to be solved so don't be discouraged if you are unable to solve one in the time allowed, but please do document your attempts.
+
+Challenge 1: tenable_cli.jar
+===
+As much as it pains me to admit it, not every tool is written in C or C++. It's important for a vulnerability hunter to be able to handle other languages: Python, Lua, Java, Go, js, etc. This challenge is written in Java. For this task, find as many vulnerabilities in tenable_cli.jar as you can. Do not overthink this. If you are hunting outside of CLI.class then you've gone too far.
+
+Deliverables:
+1. A write up describing how you approached the hunt and found the vulnerabilities.
+2. PoC scripts for each vulnerability. Please provide individual scripts for each PoC.
+
+Challenge 2: play_me
+===
+The play_me file is a CTF challenge based on a Z80-style CPU. We've hidden a flag with the format of "flag{ xxxxx }" somewhere in the application. Your task is to find this flag and provide a write-up on your approach.
+
+Deliverables:
+1. A write up describing how you approached the challenge and found the flag (if found).
+2. The flag (if found).
+
+Challenge 3: Cloud Security
+===
+This challenge involves a cloud API similar to what you might encounter during a bug hunt. Find the flag in the format "FLAG{ xxxxx }"and write-up your approach.
+
+Target : http://3.138.141.238/
+Note: Brute-forcing and directory/file enumeration are not expected or required for the challenge.
+
+Deliverables:
+1. A write up describing how you approached the challenge and found the flag (if found).
+2. The flag (if found).
+
+Challenge 4: Solve Me
+===
+This challenge binary asks for a password.  Reverse engineer the binary and determine the password.  Write-up your approach.
+
+Deliverables:
+1. A write up describing how you approached the challenge and found the password (if found).
+2. The password (if found).
