@@ -37,7 +37,7 @@ We see an if statement with a lot of function calls in the condition. These func
 
 ![Image](./writeup_images/c4_password_constraint_check.png)
 
-There are 23 functions in total, and all of them are similar to what can be seen above. Each function takes in the password as input. Then, for each character in the password, it multiplies its ordinal value with a seemingly random number. Then, once those values are added altogether, if the sum is equal to another seemingly random number, it will return a boolean value of 1 (true) or 0 (false).
+There are 23 functions in total, and all of them are similar to what can be seen above. Each function takes in the password as input. Then, for each character in the password, it multiplies its ordinal value with a seemingly random number. Then, once those values are added together, if the sum is equal to another seemingly random number, it will return a boolean value of 1 (true) or 0 (false).
 
 While this may seem impossible to solve, this is a pretty good example of the type of problem a SAT solver is designed to solve.
 
@@ -47,7 +47,7 @@ One such SMT solver is called [Z3](https://github.com/Z3Prover/z3) (written by M
 
 I'll be using the Z3 python API to solve this challenge (`pip install z3-solver`). We need to model our problem into a format that Z3 can accept. To begin, I'll go through each of the functions and copy out each constraint. I'll also clean up the variable names created by Ghidra. Here's an example of one of the constraints that I've cleaned up and prepped for use in Z3:
 ```
-pw22 * 0xba5 + pw0 * 0xb02 + pw1 * 0x2253 + pw2 * 0x1fa7 + pw3 * 0x1ab0 + pw4 * -0x1ec2 + pw5 * -0x1957 + pw6 * 0x12ec + pw7 * -0x175e + pw8 * -0x1170 + pw9 * 0x250f + pw10 * 0x566 + pw11 * 0x153e + pw12 * 0xa2f + pw13 * -0x2567 + pw14 * -0x200f + pw15 * 0x13f8 + pw16 * 0x17ec + pw17 * 0x1b43 + pw18 * 0x260b + pw19 * 0xd58 + pw20 * -0x176b + pw21 * -0xbbd == 0x25ddae;
+pw22 * 0xba5 + pw0 * 0xb02 + pw1 * 0x2253 + pw2 * 0x1fa7 + pw3 * 0x1ab0 + pw4 * -0x1ec2 + pw5 * -0x1957 + pw6 * 0x12ec + pw7 * -0x175e + pw8 * -0x1170 + pw9 * 0x250f + pw10 * 0x566 + pw11 * 0x153e + pw12 * 0xa2f + pw13 * -0x2567 + pw14 * -0x200f + pw15 * 0x13f8 + pw16 * 0x17ec + pw17 * 0x1b43 + pw18 * 0x260b + pw19 * 0xd58 + pw20 * -0x176b + pw21 * -0xbbd == 0x25ddae
 ```
 
 Once our formulas are prepped, the rest is pretty straight forward. You can see my full Z3 solver script in `PoCs/c4_solver.py`.
