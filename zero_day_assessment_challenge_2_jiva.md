@@ -18,9 +18,9 @@ Just to get our bearings, let's check what `file` thinks this file is:
 A Game Boy Rom, sweet. Let's run it in OpenEmu and see what this game is like:
 ![Image](./writeup_images/c2_openemu_initial.png)
 
-A message telling us that we need to entire the correct key combo to obtain the flag. Let's see if we can disassemble this file and learn more about whats going on underneath.
+A message telling us that we need to enter the correct key combo to obtain the flag. Let's see if we can disassemble this file and learn more about whats going on underneath.
 
-I loaded up my vanilla Ghidra instance and wanted to see if it would be able to disassemble/decompile the Gameboy file at all... It turns out that it wasn't able to. =[. The functions that it attempted to identify were nonsensical ("RST?") and it wasn't able to disassemble anything with the built-in Z80 language definition.
+I loaded up my vanilla Ghidra instance to see if it would be able to disassemble/decompile the Gameboy file at all... It turns out that it wasn't able to. =[. The functions that it attempted to identify were nonsensical ("RST?") and it wasn't able to disassemble anything with the built-in Z80 language definition.
 
 ![Image](./writeup_images/c2_vanilla_ghidra.png)
 
@@ -50,7 +50,7 @@ We can click on the address of the target string and show all references to this
 
 We see the message prompt is being referenced at address `0x0414`. Let's dissect the code around that address.
 
-The function located at address `0x0384` appears to be some sort of message printing routine. It looks like the main game loop. There's code here that prints out the prompt message, as well as any button you pressed. It also has as a reference to a string that indicates that the flag as been generated and a message for us to find it. I wonder if this is the meat of the logic around reading the input keys and generating the flag. 
+The function located at address `0x0384` appears to be some sort of message printing routine. It may even be the main game loop. There's code here that prints out the prompt message, as well as any button you pressed. It also has as a reference to a string that indicates that the flag as been generated and a message for us to find it. I wonder if this is the meat of the logic around reading the input keys and generating the flag. 
 
 ![Image](./writeup_images/c2_ghidra_0384_main_loop_maybe.png)
 
@@ -62,7 +62,7 @@ Quite a bit of disassembly was not done automatically by Ghidra. I had to go thr
 
 Researching...
 
-I decided to change my approach a little bit. I discovered the Gameboy emulator called SameBoy which has a built in debugger. I loaded up the game and then paused execution to examine what address was being executed. After several pause/continues, I observed that we're stopped at address `0x0860`.
+I decided to change my approach a little bit. I discovered a Gameboy emulator called SameBoy which has a built-in debugger. I loaded up the game and then paused execution to examine what address was being executed. After several pause/continues, I observed that we're stopped at address `0x0860`.
 
 ![Image](./writeup_images/c2_sameboy_load_pause.png)
 
@@ -71,6 +71,10 @@ Researching...
 I poked around for a bit in Sameboy's debugger. Even tried being slick and thought I could maybe jump the `pc` to a part of the code that I thought might be generating the flag (`eval pc=$0625`):
 
 ![Image](./writeup_images/c2_sameboy_jump_to_flag_gen.png)
+
+Eh, I wasn't able to make any progress with that. Maybe I'm just tired.
+
+Researching...
 
 OK - it's past 2am on Monday the 12th and I need to try to get some sleep. I will attack this again tomorrow.
 
@@ -114,7 +118,7 @@ Bit 0 - P10 Input: Right or A        (0=Pressed) (Read Only)
 
 Bits 5 and 4 correspond to "Action" or "Direction" buttons (when set to 0). These are what I'm calling the "upper" bits. The "lower" bits, bits 0-4, correspond to either an Action-button (Start, Select, B, A) or a Direction-button (Down, Up, Left, Right).
 
-If we assume that sequence is Directional, we get `Right Left Right Left Down Down Up Up`. That looks like part of the Konami Code but reversed. Hmm...
+If we assume that sequence is Directional, the sequence decodes to `Right Left Right Left Down Down Up Up`. That looks like part of the Konami Code but reversed. Hmm...
 
 I naively tried this combination (amongst others), and sadly it wasn't successful.
 
@@ -130,9 +134,9 @@ Okay. It's 11:30am on Wednesday and I managed to complete challenge 3 and 4 betw
 
 Working/Researching...
 
-GOT THE FLAG (w00t)! As of 2pm on Wednesday, I managed to find all 4 flags (not to brag or anything =]).
+GOT THE FLAG (w00t)! As of 2pm on Wednesday (a little more than 48 hours after receiving the challenges), I managed to find all 4 flags (not to brag or anything =]).
 
-I didn't manage to find the correct key combination. Heck, I'm not even certain if there _is_ a correct key combination. Before I describe my approach, here's proof:
+I didn't manage to find the correct key combination. Heck, I'm not even certain if there _is_ a correct key combination. Surely there is, right? Before I describe my approach, here's proof:
 
 ![Image](./writeup_images/c2_vram_viewer_flag.png)
 
@@ -144,13 +148,13 @@ So, I decided to change up my approach a bit. Originally, I was spending a lot o
 
 ![Image](./writeup_images/c2_ghidra_flag_generation_calls.png)
 
-The two function calls after the `do...while` loop stood out to me, even before today. I immediately noticed that the "Flag generated" message was being printed down here. I didn't, however, spend too much time initially focusing on this area of the code (hindsight is 20/20).
+The two function calls after the `do...while` loop stood out to me, even before today. During my first attempt at reviewing this code, I immediately noticed that the "Flag generated" message was being printed down here. I didn't, however, spend too much time initially focusing on this area of the code (hindsight is 20/20).
 
 I spent some time today trying to reverse engineer and understand what's going on in the functions located at `0x0996` and `0x1cf0`.
 
 ![Image](./writeup_images/c2_ghidra_function_0996.png)
 
-But because there was a reference to a global variable (which I'm calling "interesting bytes" here) that was only set during runtime (with bytes `0x1c 0x1c 0x24 0x24 0x20 0x20 0x38 0x38 0x20 0x20 0x20 0x20`), it was difficult to understand just what the code was doing with those values. I decided to switch over to Sameboy's debugger and just jump to this location and step through some of the instructions to make sense of it.
+But because there was a reference to a global variable (that's being passed into the 4th parameter of this function, which I'm calling "interesting bytes") that was only set during runtime (with bytes `0x1c 0x1c 0x24 0x24 0x20 0x20 0x38 0x38 0x20 0x20 0x20 0x20`), it was difficult to understand just what the code was doing with those values. I decided to switch over to Sameboy's debugger and just jump to this location and step through some of the instructions to make sense of it.
 
 I made one attempt before by jumping execution to `$0625` (`eval pc=$0625`) in an attempt to jump to the function call at `0x0996`, however, this was a pretty naive jump address because I didn't even consider that the stack needed to be setup prior to the actual function call at `0x0625`. The address I should have jumped to (and did, to get the flag), was `0x0619`.
 

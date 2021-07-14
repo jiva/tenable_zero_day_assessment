@@ -23,7 +23,7 @@ Peeking at the HTML source code, we see a few interesting things...
 
 ![Image](./writeup_images/c3_main_page_source.png)
 
-Hidden in the comments is a call to a JavaScript function named `TestApi()`. We also see that the links that we clicked on earlier aren't your typical anchor link, and instead are calls to the JavaScript function named `GetDoc()`. Passed into this function are what appears to be file paths. We also see a hard-coded base64 encoded key value which decodes to `{"TotallyRealTestKey":"THISISSECRET"}`.
+Hidden in the comments is a call to a JavaScript function named `TestApi()`. We also see that the links that we clicked on earlier aren't your typical anchor link, and instead are calls to the JavaScript function named `GetDoc()`. Passed into this function are what appears to be resource paths. We also see a hard-coded base64 encoded key value which decodes to `{"TotallyRealTestKey":"THISISSECRET"}`.
 
 Let's peek at test.js...
 
@@ -270,7 +270,7 @@ ubuntu@ip-172-30-3-126:~$ aws s3 ls s3://apitestdocs
 2021-06-23 21:06:43         22 flag.txt
 ```
 
-Ah-ha, flag.txt. Let's generate a presigned url and fetch it!
+Ah-ha, `flag.txt`. Let's generate a presigned url and fetch it!
 
 ```
 ubuntu@ip-172-30-3-126:~$ aws s3 presign s3://apitestdocs/public/flag.txt
