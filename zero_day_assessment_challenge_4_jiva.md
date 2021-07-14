@@ -50,7 +50,7 @@ I'll be using the Z3 python API to solve this challenge (`pip install z3-solver`
 pw22 * 0xba5 + pw0 * 0xb02 + pw1 * 0x2253 + pw2 * 0x1fa7 + pw3 * 0x1ab0 + pw4 * -0x1ec2 + pw5 * -0x1957 + pw6 * 0x12ec + pw7 * -0x175e + pw8 * -0x1170 + pw9 * 0x250f + pw10 * 0x566 + pw11 * 0x153e + pw12 * 0xa2f + pw13 * -0x2567 + pw14 * -0x200f + pw15 * 0x13f8 + pw16 * 0x17ec + pw17 * 0x1b43 + pw18 * 0x260b + pw19 * 0xd58 + pw20 * -0x176b + pw21 * -0xbbd == 0x25ddae
 ```
 
-Once our formulas are prepped, the rest is pretty straight forward. You can see my full Z3 solver script in `PoCs/c4_solver.py`.
+Once our formulas are prepped, the rest is pretty straight forward. You can see my full Z3 solver script in [`PoCs/c4_solver.py`](PoCs/c4_solver.py).
 
 Let's give our script a run:
 ```
