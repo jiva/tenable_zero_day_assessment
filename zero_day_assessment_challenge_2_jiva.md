@@ -28,9 +28,9 @@ Time to do some research on tools used to reverse engineer Z80/Gameboy files...B
 
 ***
 
-Ok, after searching the web for a few minutes I learned about an awesome Ghidra extension called GhidraBoy (https://github.com/Gekkio/GhidraBoy). This seemed to do the trick, as I can now see sensible disassembly and also decompiled code!
+Ok, after searching the web for a few minutes I learned about an awesome Ghidra extension called [GhidraBoy](https://github.com/Gekkio/GhidraBoy). This seemed to do the trick, as I can now see sensible disassembly and also decompiled code!
 
-This youtube video (https://www.youtube.com/watch?v=dQLp5i8oS3Y) is also a helpful guide in starting out with Gameboy ROM hacking.
+[This youtube video](https://www.youtube.com/watch?v=dQLp5i8oS3Y) is also a helpful guide in starting out with Gameboy ROM hacking.
 
 ![Image](./writeup_images/c2_ghidra_successfulish_disassembly.png)
 
@@ -120,8 +120,43 @@ I naively tried this combination (amongst others), and sadly it wasn't successfu
 
 Working/Researching...
 
-Okay. So I've spent the better part of 24 hours (currently it's 7pm on Tuesday) on this challenge and I'm starting to spin my wheels without making any new progress. I feel strongly that the key combination is in the initial part of function `0x0384`, but I just can not make more sense of it right now.
+Okay. So I've spent the better part of 24 hours (currently it's 7pm on Tuesday) on this challenge and I'm starting to spin my wheels without making any new progress. I feel strongly that the key combination is in the initial part of function `0x0384`, but I just cannot make more sense of it right now.
 
 Going to move on to Challenge 3 and hopefully swing back to this one before the due date.
 
 ***
+
+Okay. It's 11:30am on Wednesday and I managed to complete challenge 3 and 4 between yesterday evening and this morning. I still have to tend to work-related responsibilities, but I really want to find the flag for this challenge. It's definitely the most challenging one for me so far.
+
+Working/Researching...
+
+GOT THE FLAG (w00t)! As of 2pm on Wednesday, I managed to find all 4 flags (not to brag or anything =]).
+
+I didn't manage to find the correct key combination. Heck, I'm not even certain if there _is_ a correct key combination. Before I describe my approach, here's proof:
+
+![Image](./writeup_images/c2_vram_viewer_flag.png)
+
+```
+flag{congrats!}
+```
+
+So, I decided to change up my approach a bit. Originally, I was spending a lot of time trying to locate the correct key combination and trying to reverse engineer and understand how code related to that might be working. I wasn't making much progress on that, so today, I decided to focus on the logic around flag generation.
+
+![Image](./writeup_images/c2_ghidra_flag_generation_calls.png)
+
+The two function calls after the `do...while` loop stood out to me, even before today. I immediately noticed that the "Flag generated" message was being printed down here. I didn't, however, spend too much time initially focusing on this area of the code (hindsight is 20/20).
+
+I spent some time today trying to reverse engineer and understand what's going on in the functions located at `0x0996` and `0x1cf0`.
+
+![Image](./writeup_images/c2_ghidra_function_0996.png)
+
+But because there was a reference to a global variable (which I'm calling "interesting bytes" here) that was only set during runtime (with bytes `0x1c 0x1c 0x24 0x24 0x20 0x20 0x38 0x38 0x20 0x20 0x20 0x20`), it was difficult to understand just what the code was doing with those values. I decided to switch over to Sameboy's debugger and just jump to this location and step through some of the instructions to make sense of it.
+
+I made one attempt before by jumping execution to `$0625` (`eval pc=$0625`) in an attempt to jump to the function call at `0x0996`, however, this was a pretty naive jump address because I didn't even consider that the stack needed to be setup prior to the actual function call at `0x0625`. The address I should have jumped to (and did, to get the flag), was `0x0619`.
+
+![Image](./writeup_images/c2_ghidra_0625.png)
+
+This starting address sets up the stack prior to the function call at `0x0625`. After jumping to the correct address (`0x0619`), and stepping through the instructions, I immediately noticed the flag being dropped via Sameboy's VRAM viewer. I had it open because I had a sneaking suspicion it was going to be used during flag generation =].
+
+Anyways, this was a fun and difficult challenge. I started off completely not knowing anything about Gameboy/Z80 and left knowing at least a little bit more than I do now. I do wish that I had more time to find the correct key combination, but the goal for this challenge was to find the flag and document how I found it, which I've done =].
+
