@@ -10,7 +10,7 @@ Deliverables:
 2. PoC scripts for each vulnerability. Please provide individual scripts for each PoC.
 ```
 
-I started off this challenge by grabbing my go-to jar decompiler, JD-GUI (http://java-decompiler.github.io/).
+I started off this challenge by grabbing my go-to jar decompiler, [JD-GUI](http://java-decompiler.github.io/).
 
 Upon loading `tenable_cli.jar` and letting JD-GUI work its decompilation magic, we see a list of some interesting methods in the class `CLI`:
 
@@ -50,7 +50,7 @@ Let's attempt to exploit it:
 
 We can see the output of the command `id` and see that we effectively exploited a **command injection vulnerability** (technically a **remote command execution vulnerability**, since the socket listens across all interfaces).
 
-A PoC of this exploit can be found in `PoCs/pwn_c1_do_ping.py`
+A PoC of this exploit can be found in [`PoCs/pwn_c1_do_ping.py`](PoCs/pwn_c1_do_ping.py)
 
 ***
 
@@ -78,11 +78,11 @@ Additionally, if we specify the URL to a large file (say, 1GB of `A`s), we can e
 
 ![Image](./writeup_images/c1_do_get_DoS_server_crash.png)
 
-A PoC of the arbitrary file read exploit can be found in `PoCs/pwn_c1_do_get_arbitrary_file_read.py`.
+A PoC of the arbitrary file read exploit can be found in [`PoCs/pwn_c1_do_get_arbitrary_file_read.py`](PoCs/pwn_c1_do_get_arbitrary_file_read.py).
 
-A PoC of the SSRF exploit can be found in `PoCs/pwn_c1_do_get_ssrf.py`. Note that you'll need a webserver serving data from port 9001 on the localhost for this PoC to work.
+A PoC of the SSRF exploit can be found in [`PoCs/pwn_c1_do_get_ssrf.py`](PoCs/pwn_c1_do_get_ssrf.py). Note that you'll need a webserver serving data from port 9001 on the localhost for this PoC to work.
 
-A PoC of the denial-of-service exploit can be found in `PoCs/pwn_c1_do_get_DoS.py`.
+A PoC of the denial-of-service exploit can be found in [`PoCs/pwn_c1_do_get_DoS.py`](PoCs/pwn_c1_do_get_DoS.py).
 
 ***
 
@@ -96,9 +96,9 @@ The code in `do_make_note()` takes in input via `inputLine`. From `inputLine`, t
 
 Because of this weirdness, we're able to effectively write a file with an arbitrary file size (up to Java's max heap size), meaning we can effectively exhaust the disk space on the target system and cause a denial-of-service. We can also use this weird to exhaust the heap-space of the Java process and cause a crash, resulting in a denial-of-service vulnerability.
 
-A PoC of the heap exhaustion denial-of-service exploit can be found in `PoCs/pwn_c1_do_make_note_OOM_DoS.py`.
+A PoC of the heap exhaustion denial-of-service exploit can be found in [`PoCs/pwn_c1_do_make_note_OOM_DoS.py`](PoCs/pwn_c1_do_make_note_OOM_DoS.py).
 
-A PoC of the disk-space exhaustion denial-of-service exploit can be found in `PoCs/pwn_c1_do_make_note_exhaust_disk_space_DoS.py`. *WARNING* probably don't run this =]
+A PoC of the disk-space exhaustion denial-of-service exploit can be found in [`PoCs/pwn_c1_do_make_note_exhaust_disk_space_DoS.py`](PoCs/pwn_c1_do_make_note_exhaust_disk_space_DoS.py). *WARNING* probably don't run this =]
 
 ***
 
@@ -110,7 +110,7 @@ This method is interesting. After ensuring that the command in `inputLine` conta
 
 ![Image](./writeup_images/c1_do_read_note_directory_traversal_exploit.png)
 
-A PoC of the arbitrary file read exploit can be found in `PoCs/pwn_c1_do_read_note_directory_traversal.py`.
+A PoC of the arbitrary file read exploit can be found in [`PoCs/pwn_c1_do_read_note_directory_traversal.py`](PoCs/pwn_c1_do_read_note_directory_traversal.py).
 
 ***
 
@@ -124,4 +124,4 @@ Finally, after reviewing the code in `command_loop()` in its entirety, there app
 
 ![Image](./writeup_images/c1_secret_shell_mikejones_sploit.png)
 
-A PoC of the backdoor shell  can be found in `PoCs/pwn_c1_mikejoooooonnnnneeesss.py`.
+A PoC of the backdoor shell  can be found in [`PoCs/pwn_c1_mikejoooooonnnnneeesss.py`](PoCs/pwn_c1_mikejoooooonnnnneeesss.py).
