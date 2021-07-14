@@ -58,7 +58,7 @@ Let's give our script a run:
 T3nabl3_Z3r0_D4ys_52366
 ```
 
-Nice! Z3 was able to determine that the constraints were satisfiable and also gave us a concrete example of what characters will satisfy those constraints. Let's give it a test against the target binary just to make sure we're square:
+Nice! Z3 was able to determine that the constraints were satisfiable and also gave us a concrete example of what characters (i.e. the flag) will satisfy those constraints. Let's give the flag a test against the target binary just to make sure we're square:
 ```
 root@scw-07f9dc:~/tenable# ./solve_me
 Enter the password: T3nabl3_Z3r0_D4ys_52366
